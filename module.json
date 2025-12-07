@@ -1,0 +1,11 @@
+{
+    "name": "Navigation",
+    "alias": "navigation",
+    "description": "Navigation module",
+    "author": "Sauce Base",
+    "version": "v1.0",
+    "keywords": ["navigation"],
+    "priority": 0,
+    "providers": ["Modules\\Navigation\\Providers\\NavigationServiceProvider"],
+    "files": []
+}
