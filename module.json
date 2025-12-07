@@ -5,7 +5,7 @@
     "author": "Sauce Base",
     "version": "v1.0",
     "keywords": ["navigation"],
-    "priority": 0,
+    "priority": -1,
     "providers": ["Modules\\Navigation\\Providers\\NavigationServiceProvider"],
     "files": []
 }
