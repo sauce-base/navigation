@@ -1,11 +1,10 @@
-import type { App } from 'vue';
-import '../css/style.css';
+// import type { App } from 'vue';
 
 /**
  * Navigation module setup
  * Called during app initialization before mounting
  */
-export function setup(app: App) {
+export function setup(/* app: App */) {
     console.debug('Navigation module loaded');
 }
 
@@ -13,6 +12,6 @@ export function setup(app: App) {
  * Navigation module after mount logic
  * Called after the app has been mounted
  */
-export function afterMount(app: App) {
+export function afterMount(/* app: App */) {
     console.debug('Navigation module after mount logic executed');
 }
