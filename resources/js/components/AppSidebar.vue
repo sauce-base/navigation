@@ -30,10 +30,13 @@ const authStore = useAuthStore();
     </SidebarHeader>
     <SidebarContent>
       <NavMain />
-      <NavSecondary />
     </SidebarContent>
     <SidebarFooter>
-      <NavUser v-if="authStore.user" :user="authStore.user" />
+      <NavSecondary />
+      <NavUser
+        v-if="authStore.isAuthenticated && authStore.user"
+        :user="authStore.user"
+      />
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>
