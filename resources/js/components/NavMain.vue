@@ -47,7 +47,7 @@ const handleAction = (
                 <div
                     v-else-if="item.type === 'label'"
                     :data-testid="`nav-label-${item.id}`"
-                    class="px-2 py-1.5 text-xs font-medium text-sidebar-foreground/70"
+                    class="text-sidebar-foreground/70 px-2 py-1.5 text-xs font-medium"
                 >
                     {{ $t(item.label) }}
                 </div>
@@ -101,7 +101,10 @@ const handleAction = (
                     <SidebarMenuButton
                         v-else-if="item.type === 'action'"
                         :is-active="item.isActive"
-                        @click="(event: MouseEvent) => handleAction(item.action, event)"
+                        @click="
+                            (event: MouseEvent) =>
+                                handleAction(item.action, event)
+                        "
                     >
                         <component :is="item.icon" v-if="item.icon" />
                         <span>{{ $t(item.title) }}</span>

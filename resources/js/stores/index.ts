@@ -13,15 +13,21 @@ export const useNavigationStore = defineStore(
 
         // Computed - sorted by priority (higher first)
         const sortedNavMain = computed(() =>
-            [...navMain.value].sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0)),
+            [...navMain.value].sort(
+                (a, b) => (b.priority ?? 0) - (a.priority ?? 0),
+            ),
         );
 
         const sortedNavSecondary = computed(() =>
-            [...navSecondary.value].sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0)),
+            [...navSecondary.value].sort(
+                (a, b) => (b.priority ?? 0) - (a.priority ?? 0),
+            ),
         );
 
         const sortedNavUser = computed(() =>
-            [...navUser.value].sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0)),
+            [...navUser.value].sort(
+                (a, b) => (b.priority ?? 0) - (a.priority ?? 0),
+            ),
         );
 
         // Actions - Registration methods
@@ -93,7 +99,9 @@ export const useNavigationStore = defineStore(
         ): number => {
             // Items are sorted by priority (higher first)
             // Find the first item with lower or equal priority
-            const index = navArray.value.findIndex((i) => (i.priority ?? 0) <= priority);
+            const index = navArray.value.findIndex(
+                (i) => (i.priority ?? 0) <= priority,
+            );
             return index === -1 ? navArray.value.length : index;
         };
 
@@ -116,7 +124,9 @@ export const useNavigationStore = defineStore(
 
             // If targetId is provided, use it for positioning
             if (targetId) {
-                const targetIndex = navArray.value.findIndex((i) => i.id === targetId);
+                const targetIndex = navArray.value.findIndex(
+                    (i) => i.id === targetId,
+                );
                 if (targetIndex === -1) {
                     console.warn(
                         `Target navigation item with ID "${targetId}" not found in ${area}. Inserting by priority.`,
@@ -134,7 +144,10 @@ export const useNavigationStore = defineStore(
             }
 
             // No targetId provided, insert by priority
-            const insertIndex = findInsertionIndexByPriority(navArray, item.priority ?? 0);
+            const insertIndex = findInsertionIndexByPriority(
+                navArray,
+                item.priority ?? 0,
+            );
             navArray.value.splice(insertIndex, 0, item);
         };
 
@@ -157,7 +170,9 @@ export const useNavigationStore = defineStore(
 
             // If targetId is provided, use it for positioning
             if (targetId) {
-                const targetIndex = navArray.value.findIndex((i) => i.id === targetId);
+                const targetIndex = navArray.value.findIndex(
+                    (i) => i.id === targetId,
+                );
                 if (targetIndex === -1) {
                     console.warn(
                         `Target navigation item with ID "${targetId}" not found in ${area}. Inserting by priority.`,
@@ -175,12 +190,19 @@ export const useNavigationStore = defineStore(
             }
 
             // No targetId provided, insert by priority
-            const insertIndex = findInsertionIndexByPriority(navArray, item.priority ?? 0);
+            const insertIndex = findInsertionIndexByPriority(
+                navArray,
+                item.priority ?? 0,
+            );
             navArray.value.splice(insertIndex, 0, item);
         };
 
         // Add a separator
-        const addNavSeparator = (id: string, area: NavigationArea, priority?: number) => {
+        const addNavSeparator = (
+            id: string,
+            area: NavigationArea,
+            priority?: number,
+        ) => {
             const separator: NavigationItem = {
                 type: 'separator',
                 id,
