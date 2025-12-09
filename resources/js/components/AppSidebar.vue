@@ -2,11 +2,11 @@
 import type { SidebarProps } from '@/components/ui/sidebar';
 
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarRail,
 } from '@/components/ui/sidebar';
 
 import { useAuthStore } from '@modules/Auth/resources/js/stores';
@@ -16,28 +16,28 @@ import NavUser from './NavUser.vue';
 import TenantSwitcher from './TenantSwitcher.vue';
 
 const props = withDefaults(defineProps<SidebarProps>(), {
-  collapsible: 'icon',
-  variant: 'inset',
+    collapsible: 'icon',
+    variant: 'inset',
 });
 
 const authStore = useAuthStore();
 </script>
 
 <template>
-  <Sidebar v-bind="props">
-    <SidebarHeader>
-      <TenantSwitcher />
-    </SidebarHeader>
-    <SidebarContent>
-      <NavMain />
-    </SidebarContent>
-    <SidebarFooter>
-      <NavSecondary />
-      <NavUser
-        v-if="authStore.isAuthenticated && authStore.user"
-        :user="authStore.user"
-      />
-    </SidebarFooter>
-    <SidebarRail />
-  </Sidebar>
+    <Sidebar v-bind="props">
+        <SidebarHeader>
+            <TenantSwitcher />
+        </SidebarHeader>
+        <SidebarContent>
+            <NavMain />
+        </SidebarContent>
+        <SidebarFooter>
+            <NavSecondary />
+            <NavUser
+                v-if="authStore.isAuthenticated && authStore.user"
+                :user="authStore.user"
+            />
+        </SidebarFooter>
+        <SidebarRail />
+    </Sidebar>
 </template>

@@ -3,7 +3,7 @@
  * Called during app initialization before mounting
  */
 export function setup() {
-  console.debug('Navigation module loaded');
+    console.debug('Navigation module loaded');
 }
 
 /**
@@ -11,5 +11,5 @@ export function setup() {
  * Called after the app has been mounted
  */
 export function afterMount() {
-  console.debug('Navigation module after mount logic executed');
+    console.debug('Navigation module after mount logic executed');
 }
