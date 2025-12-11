@@ -8,7 +8,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuGroup,
-    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
@@ -20,10 +19,17 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import type { User } from '@/types';
-import { Link } from '@inertiajs/vue3';
 import { storeToRefs } from 'pinia';
-import { computed } from 'vue';
+import { computed, provide } from 'vue';
+import {
+    NavigationContextKey,
+    type NavigationRenderContext,
+} from '../composables/useNavigationContext';
 import { useNavigationStore } from '../stores';
+import NavItemAction from './NavItemAction.vue';
+import NavItemLabel from './NavItemLabel.vue';
+import NavItemLink from './NavItemLink.vue';
+import NavItemSeparator from './NavItemSeparator.vue';
 
 const props = defineProps<{
     user: User;
@@ -41,12 +47,11 @@ const userInitials = computed(() => {
         .join('');
 });
 
-const handleAction = (
-    action: (event: MouseEvent) => void | Promise<void>,
-    event: MouseEvent,
-) => {
-    action(event);
+const renderContext: NavigationRenderContext = {
+    context: 'dropdown',
+    area: 'user',
 };
+provide(NavigationContextKey, renderContext);
 </script>
 
 <template>
@@ -123,47 +128,28 @@ const handleAction = (
                         <DropdownMenuGroup>
                             <template v-for="item in items" :key="item.id">
                                 <!-- Separator -->
-                                <DropdownMenuSeparator
+                                <NavItemSeparator
                                     v-if="item.type === 'separator'"
-                                    :data-testid="`nav-user-separator-${item.id}`"
+                                    :item="item"
                                 />
 
                                 <!-- Label -->
-                                <DropdownMenuLabel
+                                <NavItemLabel
                                     v-else-if="item.type === 'label'"
-                                    :data-testid="`nav-user-label-${item.id}`"
-                                >
-                                    {{ $t(item.label) }}
-                                </DropdownMenuLabel>
+                                    :item="item"
+                                />
 
                                 <!-- Link item -->
-                                <DropdownMenuItem
+                                <NavItemLink
                                     v-else-if="item.type === 'link'"
-                                    as-child
-                                >
-                                    <Link :href="item.url">
-                                        <component
-                                            :is="item.icon"
-                                            v-if="item.icon"
-                                        />
-                                        {{ $t(item.title) }}
-                                    </Link>
-                                </DropdownMenuItem>
+                                    :item="item"
+                                />
 
                                 <!-- Action item -->
-                                <DropdownMenuItem
+                                <NavItemAction
                                     v-else-if="item.type === 'action'"
-                                    @click="
-                                        (event: MouseEvent) =>
-                                            handleAction(item.action, event)
-                                    "
-                                >
-                                    <component
-                                        :is="item.icon"
-                                        v-if="item.icon"
-                                    />
-                                    {{ $t(item.title) }}
-                                </DropdownMenuItem>
+                                    :item="item"
+                                />
                             </template>
                         </DropdownMenuGroup>
                     </template>

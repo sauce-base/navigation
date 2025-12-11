@@ -3,23 +3,29 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarMenu,
-    SidebarMenuButton,
     SidebarMenuItem,
-    SidebarSeparator,
 } from '@/components/ui/sidebar';
-import { Link } from '@inertiajs/vue3';
 import { storeToRefs } from 'pinia';
+import { provide } from 'vue';
+import {
+    NavigationContextKey,
+    type NavigationRenderContext,
+} from '../composables/useNavigationContext';
 import { useNavigationStore } from '../stores';
+import NavItemAction from './NavItemAction.vue';
+import NavItemLabel from './NavItemLabel.vue';
+import NavItemLink from './NavItemLink.vue';
+import NavItemSeparator from './NavItemSeparator.vue';
 
 const navigationStore = useNavigationStore();
 const { sortedNavSecondary: items } = storeToRefs(navigationStore);
 
-const handleAction = (
-    action: (event: MouseEvent) => void | Promise<void>,
-    event: MouseEvent,
-) => {
-    action(event);
+const renderContext: NavigationRenderContext = {
+    context: 'sidebar',
+    area: 'secondary',
+    size: 'default',
 };
+provide(NavigationContextKey, renderContext);
 </script>
 
 <template>
@@ -28,49 +34,25 @@ const handleAction = (
             <SidebarMenu>
                 <template v-for="item in items" :key="item.id">
                     <!-- Separator -->
-                    <SidebarSeparator
+                    <NavItemSeparator
                         v-if="item.type === 'separator'"
-                        :data-testid="`nav-secondary-separator-${item.id}`"
-                        class="my-2"
+                        :item="item"
                     />
 
                     <!-- Label -->
-                    <div
+                    <NavItemLabel
                         v-else-if="item.type === 'label'"
-                        :data-testid="`nav-secondary-label-${item.id}`"
-                        class="text-sidebar-foreground/70 px-2 py-1.5 text-xs font-medium"
-                    >
-                        {{ $t(item.label) }}
-                    </div>
+                        :item="item"
+                    />
 
                     <!-- Link/Action items -->
                     <SidebarMenuItem v-else>
-                        <!-- Link item -->
-                        <SidebarMenuButton
-                            v-if="item.type === 'link'"
-                            :as-child="true"
-                            :is-active="item.isActive"
-                            size="sm"
-                        >
-                            <Link :href="item.url">
-                                <component :is="item.icon" v-if="item.icon" />
-                                <span>{{ $t(item.title) }}</span>
-                            </Link>
-                        </SidebarMenuButton>
+                        <NavItemLink v-if="item.type === 'link'" :item="item" />
 
-                        <!-- Action item -->
-                        <SidebarMenuButton
+                        <NavItemAction
                             v-else-if="item.type === 'action'"
-                            :is-active="item.isActive"
-                            size="sm"
-                            @click="
-                                (event: MouseEvent) =>
-                                    handleAction(item.action, event)
-                            "
-                        >
-                            <component :is="item.icon" v-if="item.icon" />
-                            <span>{{ $t(item.title) }}</span>
-                        </SidebarMenuButton>
+                            :item="item"
+                        />
                     </SidebarMenuItem>
                 </template>
             </SidebarMenu>

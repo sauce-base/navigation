@@ -16,8 +16,16 @@ export interface BaseNavigationItem {
     /** Priority for ordering (higher = appears first) */
     priority?: number;
 
-    /** Whether item is currently active */
-    isActive?: boolean;
+    /**
+     * Function to determine if this item is currently active
+     * Will be called reactively on page changes
+     * @example isActive: () => route().current('dashboard')
+     * @example isActive: () => route().current('settings.*')
+     */
+    isActive?: () => boolean;
+
+    /** Optional custom CSS class for styling */
+    class?: string;
 }
 
 /**
@@ -82,8 +90,12 @@ export interface NavigationSubItem {
     /** Inertia route URL */
     url: string;
 
-    /** Whether sub-item is active */
-    isActive?: boolean;
+    /**
+     * Function to determine if this sub-item is currently active
+     * Will be called reactively on page changes
+     * @example isActive: () => route().current('settings.profile')
+     */
+    isActive?: () => boolean;
 }
 
 /**

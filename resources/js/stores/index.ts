@@ -1,3 +1,4 @@
+import { usePage } from '@inertiajs/vue3';
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
 import type { NavigationArea, NavigationItem } from '../types/navigation';
@@ -5,6 +6,7 @@ import type { NavigationArea, NavigationItem } from '../types/navigation';
 export const useNavigationStore = defineStore(
     'modules/navigation',
     () => {
+        const page = usePage();
 
         const navigationAreas = ref<Record<NavigationArea, NavigationItem[]>>({
             main: [],
@@ -12,12 +14,19 @@ export const useNavigationStore = defineStore(
             user: [],
         });
 
+        /**
+         * Create sorted computed that triggers reactivity on page changes
+         */
         const createSortedComputed = (area: NavigationArea) =>
-            computed(() =>
-                [...navigationAreas.value[area]].sort(
+            computed<NavigationItem[]>(() => {
+                // Access page.url to trigger reactivity on page changes
+                // This ensures the computed updates when navigating
+                void page.url;
+
+                return [...navigationAreas.value[area]].sort(
                     (a, b) => (b.priority ?? 0) - (a.priority ?? 0),
-                ),
-            );
+                );
+            });
 
         const sortedNavMain = createSortedComputed('main');
         const sortedNavSecondary = createSortedComputed('secondary');
