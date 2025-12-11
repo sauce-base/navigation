@@ -16,6 +16,7 @@ import NavItemAction from './NavItemAction.vue';
 import NavItemLabel from './NavItemLabel.vue';
 import NavItemLink from './NavItemLink.vue';
 import NavItemSeparator from './NavItemSeparator.vue';
+import StarGithubBanner from './StarGithubBanner.vue';
 
 const navigationStore = useNavigationStore();
 const { sortedNavSecondary: items } = storeToRefs(navigationStore);
@@ -29,9 +30,13 @@ provide(NavigationContextKey, renderContext);
 </script>
 
 <template>
-    <SidebarGroup v-if="items.length > 0" class="mt-auto">
+    <SidebarGroup class="mt-auto">
         <SidebarGroupContent>
-            <SidebarMenu>
+            <!-- Star GitHub Banner -->
+            <StarGithubBanner />
+
+            <!-- Navigation Items -->
+            <SidebarMenu v-if="items.length > 0">
                 <template v-for="item in items" :key="item.id">
                     <!-- Separator -->
                     <NavItemSeparator
