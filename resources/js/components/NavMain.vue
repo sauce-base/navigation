@@ -44,10 +44,7 @@ provide(NavigationContextKey, renderContext);
 
                 <!-- Link/Action items -->
                 <SidebarMenuItem v-else>
-                    <NavItemLink
-                        v-if="item.type === 'link'"
-                        :item="item"
-                    />
+                    <NavItemLink v-if="item.type === 'link'" :item="item" />
 
                     <NavItemAction
                         v-else-if="item.type === 'action'"

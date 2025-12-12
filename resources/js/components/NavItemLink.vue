@@ -13,13 +13,12 @@ import {
 } from '@/components/ui/sidebar';
 import { Link } from '@inertiajs/vue3';
 import { ChevronRight } from 'lucide-vue-next';
-import { inject } from 'vue';
+import { computed, inject } from 'vue';
 import {
     NavigationContextKey,
     type NavigationRenderContext,
 } from '../composables/useNavigationContext';
 import type { NavigationLinkItem } from '../types/navigation';
-import { computed } from 'vue';
 
 const props = defineProps<{
     item: NavigationLinkItem;

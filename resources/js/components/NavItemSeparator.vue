@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import {
-    DropdownMenuSeparator,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { SidebarSeparator } from '@/components/ui/sidebar';
 import { inject } from 'vue';
 import {
