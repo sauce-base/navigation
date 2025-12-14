@@ -9,5 +9,5 @@ To install the Navigation module, run the following commands:
 ```bash
 composer require saucebase/navigation
 composer dump-autoload
-php artisan module:enable Navigation
+docker compose exec workspace php artisan module:enable Navigation
 ```
