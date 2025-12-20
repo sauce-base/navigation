@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SidebarProps } from '@/components/ui/sidebar';
-import { Sidebar, SidebarContent } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, useSidebar } from '@/components/ui/sidebar';
 import { PageProps } from '@/types';
 import { usePage } from '@inertiajs/vue3';
 import { computed, provide } from 'vue';
@@ -13,16 +13,19 @@ withDefaults(defineProps<SidebarProps>(), {
 });
 
 const page = usePage<PageProps<{ navigation: Navigation }>>();
+const { isMobile } = useSidebar();
 
 // Show settings navigation
 const items = computed(() => page.props.navigation?.settings || []);
 
-// Disable tooltips for settings sidebar (it's never collapsible)
+// Disable tooltips for settings sidebar (it's never collapsible on desktop)
 provide('showTooltip', false);
 </script>
 
 <template>
+    <!-- Hide settings sidebar on mobile - use SettingsMobileMenu instead -->
     <Sidebar
+        v-if="!isMobile"
         :variant="variant"
         :collapsible="collapsible"
         data-sidebar="settings-sidebar"
