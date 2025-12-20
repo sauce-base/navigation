@@ -1,43 +1,48 @@
 <script setup lang="ts">
 import type { SidebarProps } from '@/components/ui/sidebar';
-
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
-    SidebarRail,
 } from '@/components/ui/sidebar';
-
-import { useAuthStore } from '@modules/Auth/resources/js/stores';
-import NavMain from './NavMain.vue';
-import NavSecondary from './NavSecondary.vue';
+import type { User } from '@/types';
+import { usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import type { Navigation } from '../types/navigation';
+import NavGroup from './NavGroup.vue';
 import NavUser from './NavUser.vue';
 import TenantSwitcher from './TenantSwitcher.vue';
 
-const props = withDefaults(defineProps<SidebarProps>(), {
+withDefaults(defineProps<SidebarProps>(), {
     collapsible: 'icon',
     variant: 'inset',
 });
 
-const authStore = useAuthStore();
+const page = usePage<{ navigation: Navigation; auth: { user: User } }>();
+
+// Always show app navigation in main sidebar
+const items = computed(() => page.props.navigation?.app || []);
+const userItems = computed(() => page.props.navigation?.user || []);
+const user = computed(() => page.props.auth?.user);
 </script>
 
 <template>
-    <Sidebar v-bind="props">
+    <Sidebar
+        :variant="variant"
+        :collapsible="collapsible"
+        data-sidebar="sidebar"
+    >
         <SidebarHeader>
             <TenantSwitcher />
         </SidebarHeader>
-        <SidebarContent>
-            <NavMain />
+
+        <SidebarContent data-sidebar="content">
+            <NavGroup :items="items" />
         </SidebarContent>
+
         <SidebarFooter>
-            <NavSecondary />
-            <NavUser
-                v-if="authStore.isAuthenticated && authStore.user"
-                :user="authStore.user"
-            />
+            <NavUser v-if="user" :user="user" :items="userItems" />
         </SidebarFooter>
-        <SidebarRail />
     </Sidebar>
 </template>

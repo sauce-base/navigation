@@ -8,6 +8,7 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuGroup,
+    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
@@ -19,25 +20,18 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import type { User } from '@/types';
-import { storeToRefs } from 'pinia';
-import { computed, provide } from 'vue';
-import {
-    NavigationContextKey,
-    type NavigationRenderContext,
-} from '../composables/useNavigationContext';
-import { useNavigationStore } from '../stores';
-import NavItemAction from './NavItemAction.vue';
-import NavItemLabel from './NavItemLabel.vue';
-import NavItemLink from './NavItemLink.vue';
-import NavItemSeparator from './NavItemSeparator.vue';
+import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import type { MenuItem } from '../types/navigation';
+import { handleAction } from '../utils/actionHandlers';
+import { resolveIcon } from '../utils/iconResolver';
 
 const props = defineProps<{
     user: User;
+    items: MenuItem[];
 }>();
 
 const { isMobile } = useSidebar();
-const navigationStore = useNavigationStore();
-const { sortedNavUser: items } = storeToRefs(navigationStore);
 
 const userInitials = computed(() => {
     return props.user.name
@@ -47,11 +41,11 @@ const userInitials = computed(() => {
         .join('');
 });
 
-const renderContext: NavigationRenderContext = {
-    context: 'dropdown',
-    area: 'user',
-};
-provide(NavigationContextKey, renderContext);
+function handleClick(item: MenuItem, event: MouseEvent) {
+    if (item.action) {
+        handleAction(item.action, event);
+    }
+}
 </script>
 
 <template>
@@ -122,35 +116,39 @@ provide(NavigationContextKey, renderContext);
                         <ThemeSelector mode="submenu" />
                     </DropdownMenuGroup>
 
-                    <!-- Dynamic navigation items from store -->
-                    <template v-if="items.length > 0">
+                    <!-- Dynamic navigation items -->
+                    <template v-if="items && items.length > 0">
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <template v-for="item in items" :key="item.id">
-                                <!-- Separator -->
-                                <NavItemSeparator
-                                    v-if="item.type === 'separator'"
-                                    :item="item"
-                                />
-
-                                <!-- Label -->
-                                <NavItemLabel
-                                    v-else-if="item.type === 'label'"
-                                    :item="item"
-                                />
-
-                                <!-- Link item -->
-                                <NavItemLink
-                                    v-else-if="item.type === 'link'"
-                                    :item="item"
-                                />
-
-                                <!-- Action item -->
-                                <NavItemAction
-                                    v-else-if="item.type === 'action'"
-                                    :item="item"
-                                />
-                            </template>
+                            <DropdownMenuItem
+                                v-for="item in items"
+                                :key="item.id || item.label"
+                                as-child
+                                :class="{ 'cursor-pointer': item.action }"
+                                @click="
+                                    item.action
+                                        ? handleClick(item, $event)
+                                        : undefined
+                                "
+                            >
+                                <Link
+                                    v-if="!item.action"
+                                    :href="item.url || '#'"
+                                >
+                                    <component
+                                        :is="resolveIcon(item.icon)"
+                                        v-if="item.icon"
+                                    />
+                                    <span>{{ $t(item.label) }}</span>
+                                </Link>
+                                <div v-else>
+                                    <component
+                                        :is="resolveIcon(item.icon)"
+                                        v-if="item.icon"
+                                    />
+                                    <span>{{ $t(item.label) }}</span>
+                                </div>
+                            </DropdownMenuItem>
                         </DropdownMenuGroup>
                     </template>
                 </DropdownMenuContent>
