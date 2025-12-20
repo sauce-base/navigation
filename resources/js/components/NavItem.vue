@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/sidebar';
 import { Link } from '@inertiajs/vue3';
 import { ChevronRight } from 'lucide-vue-next';
-import { computed } from 'vue';
+import { computed, inject } from 'vue';
 import type { MenuItem } from '../types/navigation';
 import { handleAction } from '../utils/actionHandlers';
 import { resolveIcon } from '../utils/iconResolver';
@@ -23,6 +23,9 @@ import { resolveIcon } from '../utils/iconResolver';
 const props = defineProps<{
     item: MenuItem;
 }>();
+
+// Inject tooltip visibility from parent sidebar (defaults to true)
+const showTooltip = inject<boolean>('showTooltip', true);
 
 // Type detection
 const isSeparator = computed(() => props.item.type === 'separator');
@@ -77,7 +80,7 @@ function handleClick(event: MouseEvent) {
     >
         <SidebarMenuItem>
             <CollapsibleTrigger as-child>
-                <SidebarMenuButton :tooltip="$t(item.label)">
+                <SidebarMenuButton :tooltip="showTooltip ? $t(item.label) : undefined">
                     <component :is="icon" v-if="icon" />
                     <span>{{ $t(item.label) }}</span>
                     <ChevronRight
@@ -96,7 +99,7 @@ function handleClick(event: MouseEvent) {
                             :is-active="
                                 child.active !== undefined
                                     ? child.active
-                                    : child.route && route().current(child.route)
+                                    : !!(child.route && route().current(child.route))
                             "
                         >
                             <Link :href="child.url || '#'">
@@ -115,7 +118,7 @@ function handleClick(event: MouseEvent) {
 
     <!-- Action button -->
     <SidebarMenuItem v-else-if="isAction">
-        <SidebarMenuButton :tooltip="$t(item.label)" @click="handleClick">
+        <SidebarMenuButton :tooltip="showTooltip ? $t(item.label) : undefined" @click="handleClick">
             <component :is="icon" v-if="icon" />
             <span>{{ $t(item.label) }}</span>
         </SidebarMenuButton>
@@ -126,7 +129,7 @@ function handleClick(event: MouseEvent) {
         <SidebarMenuButton
             as-child
             :is-active="isActive"
-            :tooltip="$t(item.label)"
+            :tooltip="showTooltip ? $t(item.label) : undefined"
         >
             <Link :href="item.url || '#'">
                 <component :is="icon" v-if="icon" />

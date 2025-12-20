@@ -3,7 +3,7 @@ import type { SidebarProps } from '@/components/ui/sidebar';
 import { Sidebar, SidebarContent } from '@/components/ui/sidebar';
 import { PageProps } from '@/types';
 import { usePage } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, provide } from 'vue';
 import type { Navigation } from '../types/navigation';
 import NavGroup from './NavGroup.vue';
 
@@ -16,6 +16,9 @@ const page = usePage<PageProps<{ navigation: Navigation }>>();
 
 // Show settings navigation
 const items = computed(() => page.props.navigation?.settings || []);
+
+// Disable tooltips for settings sidebar (it's never collapsible)
+provide('showTooltip', false);
 </script>
 
 <template>

@@ -87,4 +87,17 @@ class NavigationBuilder
 
         return $navigation->tree();
     }
+
+    public function breadcrumbs(): array
+    {
+        // Create a fresh Navigation instance to avoid sharing state between groups
+        $activeUrlChecker = app(\Spatie\Navigation\Helpers\ActiveUrlChecker::class);
+        $navigation = new Navigation($activeUrlChecker);
+
+        foreach ($this->callbacks as $item) {
+            $navigation->add($item['title'], $item['url'], $item['callback']);
+        }
+
+        return $navigation->breadcrumbs();
+    }
 }

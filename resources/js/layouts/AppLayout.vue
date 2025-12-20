@@ -15,8 +15,10 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import AppSidebar from '../components/AppSidebar.vue';
+import { useSidebarState } from '../composables/useSidebarState';
 
 const props = defineProps<{
     title?: string;
@@ -25,10 +27,22 @@ const props = defineProps<{
         url?: string;
     }>;
 }>();
+
+// Persist sidebar state across Inertia navigation
+const { isOpen } = useSidebarState();
+
+// Get auto-generated breadcrumbs from Inertia props
+const page = usePage();
+
+// Use manual breadcrumbs if provided, otherwise use auto-generated ones
+const displayBreadcrumbs = computed(() => {
+    if (props.breadcrumbs?.length) return props.breadcrumbs;
+    return page.props.breadcrumbs || [];
+});
 </script>
 
 <template>
-    <SidebarProvider>
+    <SidebarProvider v-model:open="isOpen">
         <AppSidebar />
         <SidebarInset>
             <header
@@ -40,13 +54,13 @@ const props = defineProps<{
                         orientation="vertical"
                         class="mr-2 data-[orientation=vertical]:h-4"
                     />
-                    <Breadcrumb v-if="props.title || props.breadcrumbs">
+                    <Breadcrumb v-if="props.title || displayBreadcrumbs.length">
                         <BreadcrumbList>
-                            <template v-if="props.breadcrumbs">
+                            <template v-if="displayBreadcrumbs.length">
                                 <template
                                     v-for="(
                                         breadcrumb, index
-                                    ) in props.breadcrumbs"
+                                    ) in displayBreadcrumbs"
                                     :key="index"
                                 >
                                     <BreadcrumbItem>
@@ -64,7 +78,7 @@ const props = defineProps<{
                                     </BreadcrumbItem>
                                     <BreadcrumbSeparator
                                         v-if="
-                                            index < props.breadcrumbs.length - 1
+                                            index < displayBreadcrumbs.length - 1
                                         "
                                     />
                                 </template>
